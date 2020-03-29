@@ -4,7 +4,7 @@ var bodyParser = require('body-parser')
 const url = require('url');
 const fileUpload = require('express-fileupload');
 var cors = require('cors');
-const db = require('./db-m.js');
+const db = require('./db.js');
 
 //create the server
 const app = express();
