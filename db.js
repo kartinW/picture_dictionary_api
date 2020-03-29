@@ -4,8 +4,8 @@ require('dotenv').config();
 const { Pool } = require('pg');
 
 // check whether this api is runing on production server or not
-const isProduction = process.env.IS_PRODUCTION.toLowerCase() === 'true';
-console.log(process.env.IS_PRODUCTION);
+const isProduction = true;//process.env.IS_PRODUCTION.toLowerCase() === 'true';
+c//onsole.log(process.env.IS_PRODUCTION);
 console.log(`Is this the production environment? ${isProduction ? 'yes' : 'no'}`);
 
 
