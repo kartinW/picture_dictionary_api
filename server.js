@@ -96,7 +96,10 @@ app.get('/contents', (request, response) => {
   console.log('/contents');
   db.getAllThemes()
   .then(x => response.json(x))
-  .catch(e => response.status(500).send('The themes could not be retrieved.'));
+  .catch(e => {
+    console.log(e);
+    response.status(500).send('The themes could not be retrieved.');
+  });
 });
 
 app.get('/labels/:imageId', (request, response) => {
