@@ -17,7 +17,9 @@ app.use(fileUpload());
 app.use(cors());
 
 
-
+app.get('/', (request, response) => {
+  response.send('welcome to our picture dictionary service.')
+});
 
 app.post('/theme', (request, response) => {
   let date = new Date(Date.now()).toString();
