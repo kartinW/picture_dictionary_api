@@ -8,7 +8,7 @@ const db = require('./db.js');
 
 //create the server
 const app = express();
-const port = 4002;
+const port = process.env.PORT || 4002;
 
 // parse application/json
 app.use(bodyParser.json());
