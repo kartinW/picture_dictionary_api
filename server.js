@@ -39,6 +39,7 @@ app.post('/image/:contentId', (request, response) => {
   .then(image => {imageFile.mv('./data/' + image.name);return image;})
   .then(image => response.json(image.id))
   .catch(e => {
+    console.log('The image could not be saved.');
     console.log(e);
     response.status(500).send('The image could not be saved.');
   });
