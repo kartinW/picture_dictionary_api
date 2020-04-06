@@ -4,13 +4,13 @@ require('dotenv').config();
 const { Pool } = require('pg');
 
 // check whether this api is runing on production server or not
-const isProduction = true;//process.env.IS_PRODUCTION.toLowerCase() === 'true';
+const isProduction = process.env.IS_PRODUCTION !== 'false';
 //onsole.log(process.env.IS_PRODUCTION);
 console.log(`Is this the production environment? ${isProduction ? 'yes' : 'no'}`);
 
 
 //postgresql://USER:PASSWORD@HOST:PORT/DATABASE
-// postgresql://hamidbahramian:@localhost:5433/picture_dictionary
+
 const postgreConnectionString =
  `postgresql://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_HOST}:${process.env.POSTGRES_PORT}/${process.env.POSTGRES_DATABASE}`;
 
@@ -75,4 +75,21 @@ function getImageName(imageId) {
   .then(result => result.rows[0].name);
 }
 
-module.exports = { saveTheme, getAllThemes, getImageIds, getImageName, saveImage, saveLabel, getLabel, getLabels , updateLabel}
+function saveImageToDB(imageId, image) {
+  //console.log(image);
+  return postgrePool.query('update image set data =  $1 where id = $2', [image.data, imageId])
+  .then(result => result.rows);
+}
+
+function getImageData(imageId) {
+  return postgrePool.query('select data from image where id = $1', [imageId])
+  .then(result => {
+    if (result.rows[0]) {
+      return result.rows[0].data;
+    } else {
+      throw Error('The imgae data could not be found in the database.');
+    }
+  });
+}
+
+module.exports = { saveTheme, getAllThemes, getImageIds, getImageName, saveImage, saveLabel, getLabel, getLabels , updateLabel, saveImageToDB, getImageData}

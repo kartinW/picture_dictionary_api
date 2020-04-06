@@ -30,7 +30,7 @@ app.post('/theme', (request, response) => {
 
 });
 
-app.post('/image/:contentId', (request, response) => {
+app.post('/file/image/:contentId', (request, response) => {
   console.log(`/image/${ request.params.contentId} received.`);
 
   let imageFile = request.files.image;
@@ -45,7 +45,46 @@ app.post('/image/:contentId', (request, response) => {
   });
 });
 
+app.post('/image/:contentId', (request, response) => {
+  console.log(`/image/${ request.params.contentId} received.`);
+
+  let imageFile = request.files.image;
+
+  db.saveImage(request.params.contentId)
+  .then(image => {
+    return db.saveImageToDB(image.id, imageFile)
+                            .then(() => image);
+
+  })
+  .then(image => {
+    console.log(`The iamge ${image.id} saved to the database.`);
+    return response.json(image.id);
+  })
+  .catch(e => {
+    console.log('The image could not be saved.');
+    console.log(e);
+    response.status(500).send('The image could not be saved.');
+  });
+});
+
 app.put('/image/:imageId', (request, response) => {
+  console.log(`/image/${ request.params.imageId} received to be updated.`);
+
+  let imageFile = request.files.image;
+  let imageId = request.params.imageId
+
+  db.saveImageToDB(imageId, imageFile)
+  .then(x => {
+    console.log(`The image ${imageId} updated.`);
+    return response.status(200).json({message:'The image updated.'});
+  })
+  .catch(e => {
+    console.log(e);
+    response.status(500).send('The image could not be updated.');
+  });
+});
+
+app.put('/file/image/:imageId', (request, response) => {
   console.log(`/image/${ request.params.imageId} received.`);
 
   let imageFile = request.files.image;
@@ -119,8 +158,22 @@ app.get('/pages/:contentId', (request, response) => {
   .catch(e => response.status(404).send('No images were found for the content.'));
 });
 
-
 app.get('/pages/:contentId/image/:imageId', (request, response) => {
+  let date = new Date(Date.now()).toString();
+  console.log(`${date}: Get image ${request.params.imageId}`);
+  let contentId = Number(request.params.contentId);
+  let photoId = Number(request.params.imageId);
+  console.log(`${contentId} ${photoId}`);
+  db.getImageData(photoId)
+  .then(x => {
+    response.contentType('image/png');
+    response.send(x);
+  })
+  .catch(e => response.status(404).send('No image were found.'));
+});
+
+
+app.get('/file/pages/:contentId/image/:imageId', (request, response) => {
   let date = new Date(Date.now()).toString();
   console.log('pages...');
   let contentId = Number(request.params.contentId);
@@ -132,8 +185,6 @@ app.get('/pages/:contentId/image/:imageId', (request, response) => {
     response.sendFile(__dirname + '/data/' + x);
   })
   .catch(e => response.status(404).send('No image were found.'));
-
-
 });
 
 app.get('/words/:contentId/:imageId/:objectX/:objectY', (request, response) => {
