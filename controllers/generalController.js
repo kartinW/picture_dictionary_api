@@ -34,7 +34,7 @@ function getImageData(request, response) {
   let contentId = Number(request.params.contentId);
   let photoId = Number(request.params.imageId);
   console.log(`${contentId} ${photoId}`);
-  db.getImageData(photoId)
+  image.getImageData(photoId)
   .then(data => {
     console.log('sending file ...');
     response.contentType('image/png');
@@ -51,7 +51,7 @@ function getLabel(request, response)  {
   let objectX = Number(request.params.objectX);
   let objectY = Number(request.params.objectY);
   console.log(`${contentId} ${photoId}`);
-  db.getLabel(photoId, objectX, objectY)
+  label.getLabel(photoId, objectX, objectY)
   .then(x => {
     if(x.length > 0) {
       response.json({name: x[0].name, number: x[0].number});
